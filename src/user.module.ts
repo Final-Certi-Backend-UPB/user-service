@@ -1,21 +1,18 @@
 import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
-import { EurekaModule } from "nestjs-eureka";
 
 import { IUserService } from "src/interfaces/user.interface";
 import { dataSource } from "./config/dataSource";
-import { eurekaConfig } from "./config/eureka";
+import { AuthController } from "./controllers/auth.controller";
 import { UserController } from "./controllers/user.controller";
 import { UserEntity } from "./entities/user.entity";
-import { UserService } from "./services/user.service";
-import { AuthController } from "./controllers/auth.controller";
 import { IAuthService } from "./interfaces/auth.interface";
 import { AuthService } from "./services/auth.service";
+import { UserService } from "./services/user.service";
 
 @Module({
   imports: [
     TypeOrmModule.forRoot(dataSource),
-    EurekaModule.forRoot(eurekaConfig),
     TypeOrmModule.forFeature([UserEntity]),
   ],
   controllers: [UserController, AuthController],

@@ -26,7 +26,7 @@ export class UserController {
   };
 
   @Get("/:userId")
-  async getUserById(@Param() userId): Promise<InfoMessage<UserDto>> {
+  async getUserById(@Param('userId') userId: string): Promise<InfoMessage<UserDto>> {
     const user = await this.userService.findById(userId);
     return {
       message: "User retrieved successfully",
