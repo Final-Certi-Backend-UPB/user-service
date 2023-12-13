@@ -76,6 +76,6 @@ export class UserService implements IUserService {
       throw new NotFoundException("User not found");
     }
 
-    await this.userRepository.delete({ userId });
+    await this.userRepository.delete({ userId: user.userId });
   };
 }

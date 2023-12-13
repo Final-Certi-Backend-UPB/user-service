@@ -44,7 +44,7 @@ export class UserController {
   };
 
   @Put("/:userId")
-  async updateUser(@Param() userId, @Body() userData: Partial<CreateUserDto>): Promise<InfoMessage<UserDto>> {
+  async updateUser(@Param("userId") userId: string, @Body() userData: Partial<CreateUserDto>): Promise<InfoMessage<UserDto>> {
     const user = await this.userService.updateUser(userId, userData);
     return {
       message: "User updated successfully",
@@ -53,7 +53,7 @@ export class UserController {
   };
 
   @Delete("/:userId")
-  async deleteUser(@Param() userId): Promise<InfoMessage<void>> {
+  async deleteUser(@Param("userId") userId: string): Promise<InfoMessage<void>> {
     await this.userService.deleteUser(userId);
     return {
       message: "User deleted successfully",
