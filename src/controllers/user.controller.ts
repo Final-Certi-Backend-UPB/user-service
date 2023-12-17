@@ -2,8 +2,9 @@ import {
   Body,
   Controller,
   Delete,
-  Get, HttpCode, HttpStatus, Inject, Param, Post, Put
+  Get, HttpCode, HttpStatus, Inject, Param, Post, Put, Req
 } from "@nestjs/common";
+import { Request } from 'express'
 
 import { IUserService } from "src/interfaces/user.interface";
 import { InfoMessage } from "../dtos/_infoMessage.dto";
@@ -20,12 +21,23 @@ export class UserController {
     @Inject(IAuthService)
     private authService: IAuthService
   ) { }
+
   @Get()
   async getAllUsers(): Promise<InfoMessage<UserDto[]>> {
     const users = await this.userService.findAll();
     return {
       message: "Users retrieved successfully",
       data: users,
+    }
+  };
+
+  @Get("/me")
+  async getMe(@Req() req: Request): Promise<InfoMessage<UserDto>> {
+    const userId = req.headers['user'] as string;
+    const user = await this.userService.findById(userId);
+    return {
+      message: "User retrieved successfully",
+      data: user,
     }
   };
 

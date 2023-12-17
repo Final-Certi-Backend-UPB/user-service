@@ -18,7 +18,7 @@ export class UserService implements IUserService {
 
   async findById(userId: string): Promise<UserDto> {
     this.logger.log("findById");
-    this.logger.debug(userId);
+    this.logger.debug(`userId: ${userId}`);
     const userEntity = await this.userRepository.findOneBy({ userId });
     if (!userEntity) {
       throw new NotFoundException("User not found");
