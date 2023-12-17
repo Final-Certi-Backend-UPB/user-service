@@ -8,7 +8,7 @@ async function bootstrap() {
   const app = await NestFactory.create(UserModule);
   
   const eureka = new EurekaService();
-
+  app.enableCors();
   app.useGlobalPipes(new ValidationPrinterPipe());
 
   await app.listen(env.port);

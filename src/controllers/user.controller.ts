@@ -2,19 +2,23 @@ import {
   Body,
   Controller,
   Delete,
-  Get, Inject, Param, Post, Put
+  Get, HttpCode, HttpStatus, Inject, Param, Post, Put
 } from "@nestjs/common";
 
 import { IUserService } from "src/interfaces/user.interface";
 import { InfoMessage } from "../dtos/_infoMessage.dto";
 import { CreateUserDto } from "../dtos/createUser.dto";
 import { UserDto } from "../dtos/user.dto";
+import { LoginDto } from "src/dtos/login.dto";
+import { IAuthService } from "src/interfaces/auth.interface";
 
-@Controller('users')
+@Controller()
 export class UserController {
   constructor(
     @Inject(IUserService)
-    private readonly userService: IUserService
+    private readonly userService: IUserService,
+    @Inject(IAuthService)
+    private authService: IAuthService
   ) { }
   @Get()
   async getAllUsers(): Promise<InfoMessage<UserDto[]>> {
@@ -34,7 +38,7 @@ export class UserController {
     }
   };
 
-  @Post()
+  @Post("/")
   async createUser(@Body() userData: CreateUserDto): Promise<InfoMessage<UserDto>> {
     const user = await this.userService.createUser(userData);
     return {
@@ -59,4 +63,14 @@ export class UserController {
       message: "User deleted successfully",
     }
   };
+
+  @Post('check')
+  @HttpCode(HttpStatus.OK)
+  async checkCredentials(@Body() signInDto: LoginDto): Promise<InfoMessage<UserDto>> {
+    const userDto: UserDto = await this.authService.checkCredentials(signInDto.email, signInDto.password);
+    return {
+      message: "User credentials are correct",
+      data: userDto,
+    }
+  }
 }

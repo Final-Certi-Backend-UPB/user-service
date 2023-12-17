@@ -1,4 +1,4 @@
-import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import { ConflictException, Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
 import { Repository } from 'typeorm';
@@ -10,12 +10,15 @@ import { IUserService } from '../interfaces/user.interface';
 
 @Injectable()
 export class UserService implements IUserService {
+  private readonly logger = new Logger(UserService.name);
   constructor(
     @InjectRepository(UserEntity)
     private userRepository: Repository<UserEntity>,
   ) { }
 
   async findById(userId: string): Promise<UserDto> {
+    this.logger.log("findById");
+    this.logger.debug(userId);
     const userEntity = await this.userRepository.findOneBy({ userId });
     if (!userEntity) {
       throw new NotFoundException("User not found");
@@ -25,6 +28,7 @@ export class UserService implements IUserService {
   };
 
   async findByEmail(email: string): Promise<UserDto> {
+    this.logger.log("findByEmail");
     const userEntity = await this.userRepository.findOneBy({ email });
     if (!userEntity) {
       throw new NotFoundException("User not found");
@@ -34,11 +38,13 @@ export class UserService implements IUserService {
   };
 
   async findAll(): Promise<UserDto[]> {
+    this.logger.log("findAll");
     const userEntities = await this.userRepository.find();
     return userEntities.map(userEntity => new UserDto(userEntity));
   };
 
   async createUser(userData: CreateUserDto): Promise<UserDto> {
+    this.logger.log("createUser");
     const userEmail = await this.userRepository.findOneBy({ email: userData.email });
     if (userEmail) {
       throw new ConflictException("User already exists");
@@ -54,6 +60,7 @@ export class UserService implements IUserService {
   };
 
   async updateUser(userId: string, userData: Partial<CreateUserDto>): Promise<UserDto> {
+    this.logger.log("updateUser");
     const userEntity = await this.userRepository.findOneBy({ userId });
     if (!userEntity) {
       throw new NotFoundException("User not found");
@@ -71,6 +78,7 @@ export class UserService implements IUserService {
   };
 
   async deleteUser(userId: string): Promise<void> {
+    this.logger.log("deleteUser");
     const user = await this.findById(userId);
     if (!user) {
       throw new NotFoundException("User not found");
