@@ -13,7 +13,7 @@ import { UserDto } from "../dtos/user.dto";
 import { LoginDto } from "src/dtos/login.dto";
 import { IAuthService } from "src/interfaces/auth.interface";
 
-@Controller()
+@Controller('users')
 export class UserController {
   constructor(
     @Inject(IUserService)
